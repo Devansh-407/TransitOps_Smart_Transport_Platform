@@ -520,6 +520,20 @@ router.put('/maintenance/:id/complete', protect, async (req, res) => {
 });
 
 // ----------------------------------------------------
+// CONTRIBUTION METADATA
+// ----------------------------------------------------
+
+router.get('/contribution', (req, res) => {
+  res.json({
+    project: 'TransFlow',
+    contributor: 'Devansh-407',
+    area: 'Backend server',
+    note: 'This endpoint is read-only and does not affect existing application flows.',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// ----------------------------------------------------
 // EXPENSES & FUEL ENDPOINTS
 // ----------------------------------------------------
 
