@@ -24,7 +24,7 @@ router.post('/auth/login', async (req, res) => {
     return res.status(400).json({ error: 'Please provide email and password' });
   }
 
-  const users = getCollection('users');
+  const users = await getCollection('users');
   const user = users.find(u => u.email.toLowerCase() === email.trim().toLowerCase());
 
   if (!user) {
@@ -75,7 +75,7 @@ router.post('/auth/register', async (req, res) => {
     return res.status(400).json({ error: 'All fields are required' });
   }
 
-  const users = getCollection('users');
+  const users = await getCollection('users');
   if (users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
     return res.status(400).json({ error: 'User already exists' });
   }
@@ -92,7 +92,7 @@ router.post('/auth/register', async (req, res) => {
     avatar: name.split(' ').map(n => n[0]).join('').toUpperCase()
   };
 
-  const savedUser = insertItem('users', newUser);
+  const savedUser = await insertItem('users', newUser);
 
   const token = jwt.sign(
     { id: savedUser.id, name: savedUser.name, email: savedUser.email, role: savedUser.role, department: savedUser.department },
@@ -113,7 +113,7 @@ router.post('/auth/register', async (req, res) => {
   });
 });
 
-router.get('/auth/me', protect, (req, res) => {
+router.get('/auth/me', protect, async (req, res) => {
   res.json({ user: req.user });
 });
 
@@ -121,22 +121,22 @@ router.get('/auth/me', protect, (req, res) => {
 // VEHICLES ENDPOINTS
 // ----------------------------------------------------
 
-router.get('/vehicles', protect, (req, res) => {
-  res.json(getCollection('vehicles'));
+router.get('/vehicles', protect, async (req, res) => {
+  res.json(await getCollection('vehicles'));
 });
 
-router.post('/vehicles', protect, (req, res) => {
+router.post('/vehicles', protect, async (req, res) => {
   const { registrationNumber, model, type, capacity, mileage, acquisitionCost } = req.body;
   if (!registrationNumber || !model || !type || !capacity) {
     return res.status(400).json({ error: 'Registration, Model, Type, and Capacity are required' });
   }
 
-  const vehicles = getCollection('vehicles');
+  const vehicles = await getCollection('vehicles');
   if (vehicles.some(v => v.registrationNumber.toUpperCase() === registrationNumber.toUpperCase())) {
     return res.status(400).json({ error: 'Vehicle with this registration number already exists' });
   }
 
-  const newVehicle = insertItem('vehicles', {
+  const newVehicle = await insertItem('vehicles', {
     registrationNumber: registrationNumber.toUpperCase(),
     model,
     type,
@@ -149,31 +149,31 @@ router.post('/vehicles', protect, (req, res) => {
   res.status(201).json(newVehicle);
 });
 
-router.put('/vehicles/:id', protect, (req, res) => {
+router.put('/vehicles/:id', protect, async (req, res) => {
   const { id } = req.params;
   const updates = req.body;
 
-  const vehicle = getItemById('vehicles', id);
+  const vehicle = await getItemById('vehicles', id);
   if (!vehicle) {
     return res.status(404).json({ error: 'Vehicle not found' });
   }
 
   // Validate registration uniqueness if changing
   if (updates.registrationNumber && updates.registrationNumber.toUpperCase() !== vehicle.registrationNumber) {
-    const vehicles = getCollection('vehicles');
+    const vehicles = await getCollection('vehicles');
     if (vehicles.some(v => v.registrationNumber.toUpperCase() === updates.registrationNumber.toUpperCase() && v.id !== id)) {
       return res.status(400).json({ error: 'Vehicle with this registration number already exists' });
     }
     updates.registrationNumber = updates.registrationNumber.toUpperCase();
   }
 
-  const updatedVehicle = updateItemById('vehicles', id, updates);
+  const updatedVehicle = await updateItemById('vehicles', id, updates);
   res.json(updatedVehicle);
 });
 
-router.delete('/vehicles/:id', protect, (req, res) => {
+router.delete('/vehicles/:id', protect, async (req, res) => {
   const { id } = req.params;
-  const success = deleteItemById('vehicles', id);
+  const success = await deleteItemById('vehicles', id);
   if (!success) {
     return res.status(404).json({ error: 'Vehicle not found' });
   }
@@ -184,22 +184,22 @@ router.delete('/vehicles/:id', protect, (req, res) => {
 // DRIVERS ENDPOINTS
 // ----------------------------------------------------
 
-router.get('/drivers', protect, (req, res) => {
-  res.json(getCollection('drivers'));
+router.get('/drivers', protect, async (req, res) => {
+  res.json(await getCollection('drivers'));
 });
 
-router.post('/drivers', protect, (req, res) => {
+router.post('/drivers', protect, async (req, res) => {
   const { name, licenseNumber, licenseCategory, licenseExpiryDate, phone, safetyScore } = req.body;
   if (!name || !licenseNumber || !licenseExpiryDate) {
     return res.status(400).json({ error: 'Name, License Number, and Expiry Date are required' });
   }
 
-  const drivers = getCollection('drivers');
+  const drivers = await getCollection('drivers');
   if (drivers.some(d => d.licenseNumber.toUpperCase() === licenseNumber.toUpperCase())) {
     return res.status(400).json({ error: 'Driver with this license number already exists' });
   }
 
-  const newDriver = insertItem('drivers', {
+  const newDriver = await insertItem('drivers', {
     name,
     licenseNumber: licenseNumber.toUpperCase(),
     licenseCategory: licenseCategory || 'LMV',
@@ -212,7 +212,7 @@ router.post('/drivers', protect, (req, res) => {
   // If expired, check if we need to create warning notification
   const today = new Date().toISOString().split('T')[0];
   if (licenseExpiryDate < today) {
-    insertItem('notifications', {
+    await insertItem('notifications', {
       role: 'safety_officer',
       message: `Driver ${name}'s license expired on ${licenseExpiryDate}!`,
       date: new Date().toISOString(),
@@ -223,30 +223,30 @@ router.post('/drivers', protect, (req, res) => {
   res.status(201).json(newDriver);
 });
 
-router.put('/drivers/:id', protect, (req, res) => {
+router.put('/drivers/:id', protect, async (req, res) => {
   const { id } = req.params;
   const updates = req.body;
 
-  const driver = getItemById('drivers', id);
+  const driver = await getItemById('drivers', id);
   if (!driver) {
     return res.status(404).json({ error: 'Driver not found' });
   }
 
   if (updates.licenseNumber && updates.licenseNumber.toUpperCase() !== driver.licenseNumber) {
-    const drivers = getCollection('drivers');
+    const drivers = await getCollection('drivers');
     if (drivers.some(d => d.licenseNumber.toUpperCase() === updates.licenseNumber.toUpperCase() && d.id !== id)) {
       return res.status(400).json({ error: 'Driver with this license number already exists' });
     }
     updates.licenseNumber = updates.licenseNumber.toUpperCase();
   }
 
-  const updatedDriver = updateItemById('drivers', id, updates);
+  const updatedDriver = await updateItemById('drivers', id, updates);
   
   // Create notification if license is updated and now expired
   if (updates.licenseExpiryDate) {
     const today = new Date().toISOString().split('T')[0];
     if (updates.licenseExpiryDate < today) {
-      insertItem('notifications', {
+      await insertItem('notifications', {
         role: 'safety_officer',
         message: `Driver ${updatedDriver.name}'s license expired on ${updates.licenseExpiryDate}!`,
         date: new Date().toISOString(),
@@ -258,9 +258,9 @@ router.put('/drivers/:id', protect, (req, res) => {
   res.json(updatedDriver);
 });
 
-router.delete('/drivers/:id', protect, (req, res) => {
+router.delete('/drivers/:id', protect, async (req, res) => {
   const { id } = req.params;
-  const success = deleteItemById('drivers', id);
+  const success = await deleteItemById('drivers', id);
   if (!success) {
     return res.status(404).json({ error: 'Driver not found' });
   }
@@ -271,18 +271,18 @@ router.delete('/drivers/:id', protect, (req, res) => {
 // TRIPS ENDPOINTS
 // ----------------------------------------------------
 
-router.get('/trips', protect, (req, res) => {
-  res.json(getCollection('trips'));
+router.get('/trips', protect, async (req, res) => {
+  res.json(await getCollection('trips'));
 });
 
-router.post('/trips', protect, (req, res) => {
+router.post('/trips', protect, async (req, res) => {
   const { source, destination, vehicleId, driverId, cargoWeight, distance, revenue } = req.body;
   if (!source || !destination || !vehicleId || !driverId || !cargoWeight || !distance) {
     return res.status(400).json({ error: 'All trip fields are required' });
   }
 
-  const vehicle = getItemById('vehicles', vehicleId);
-  const driver = getItemById('drivers', driverId);
+  const vehicle = await getItemById('vehicles', vehicleId);
+  const driver = await getItemById('drivers', driverId);
 
   if (!vehicle) return res.status(404).json({ error: 'Vehicle not found' });
   if (!driver) return res.status(404).json({ error: 'Driver not found' });
@@ -314,7 +314,7 @@ router.post('/trips', protect, (req, res) => {
     return res.status(400).json({ error: `Cargo weight (${cargoWeight} kg) exceeds vehicle's capacity (${vehicle.capacity} kg)` });
   }
 
-  const newTrip = insertItem('trips', {
+  const newTrip = await insertItem('trips', {
     source,
     destination,
     vehicleId,
@@ -332,17 +332,17 @@ router.post('/trips', protect, (req, res) => {
   res.status(201).json(newTrip);
 });
 
-router.put('/trips/:id/dispatch', protect, (req, res) => {
+router.put('/trips/:id/dispatch', protect, async (req, res) => {
   const { id } = req.params;
-  const trip = getItemById('trips', id);
+  const trip = await getItemById('trips', id);
   if (!trip) return res.status(404).json({ error: 'Trip not found' });
 
   if (trip.status !== 'draft') {
     return res.status(400).json({ error: 'Only draft trips can be dispatched' });
   }
 
-  const vehicle = getItemById('vehicles', trip.vehicleId);
-  const driver = getItemById('drivers', trip.driverId);
+  const vehicle = await getItemById('vehicles', trip.vehicleId);
+  const driver = await getItemById('drivers', trip.driverId);
 
   if (!vehicle || !driver) {
     return res.status(400).json({ error: 'Assigned vehicle or driver no longer exists' });
@@ -353,20 +353,19 @@ router.put('/trips/:id/dispatch', protect, (req, res) => {
     return res.status(400).json({ error: 'Vehicle or Driver is already busy on another trip' });
   }
 
-  // Update trip status
-  updateItemById('trips', id, {
+  await updateItemById('trips', id, {
     status: 'dispatched',
     startDate: new Date().toISOString()
   });
 
   // 5. Business Rule: Dispatching a trip automatically changes both the vehicle and driver status to On Trip.
-  updateItemById('vehicles', trip.vehicleId, { status: 'on_trip' });
-  updateItemById('drivers', trip.driverId, { status: 'on_trip' });
+  await updateItemById('vehicles', trip.vehicleId, { status: 'on_trip' });
+  await updateItemById('drivers', trip.driverId, { status: 'on_trip' });
 
   res.json({ success: true, message: 'Trip dispatched successfully' });
 });
 
-router.put('/trips/:id/complete', protect, (req, res) => {
+router.put('/trips/:id/complete', protect, async (req, res) => {
   const { id } = req.params;
   const { finalOdometer, fuelConsumed } = req.body;
   
@@ -374,14 +373,14 @@ router.put('/trips/:id/complete', protect, (req, res) => {
     return res.status(400).json({ error: 'Final odometer is required to complete the trip' });
   }
 
-  const trip = getItemById('trips', id);
+  const trip = await getItemById('trips', id);
   if (!trip) return res.status(404).json({ error: 'Trip not found' });
 
   if (trip.status !== 'dispatched') {
     return res.status(400).json({ error: 'Only dispatched trips can be completed' });
   }
 
-  const vehicle = getItemById('vehicles', trip.vehicleId);
+  const vehicle = await getItemById('vehicles', trip.vehicleId);
   if (!vehicle) return res.status(404).json({ error: 'Vehicle not found' });
 
   const distance = Number(trip.distance);
@@ -392,7 +391,7 @@ router.put('/trips/:id/complete', protect, (req, res) => {
   }
 
   // Update Trip
-  updateItemById('trips', id, {
+  await updateItemById('trips', id, {
     status: 'completed',
     endDate: new Date().toISOString(),
     finalOdometer: odometerVal,
@@ -400,25 +399,25 @@ router.put('/trips/:id/complete', protect, (req, res) => {
   });
 
   // 6. Business Rule: Completing a trip automatically changes both the vehicle and driver status back to Available.
-  updateItemById('vehicles', trip.vehicleId, {
+  await updateItemById('vehicles', trip.vehicleId, {
     status: 'available',
     mileage: odometerVal
   });
-  updateItemById('drivers', trip.driverId, {
+  await updateItemById('drivers', trip.driverId, {
     status: 'available'
   });
 
   // Log fuel & expense if fuel was consumed
   if (fuelConsumed && Number(fuelConsumed) > 0) {
     const fuelCost = Math.round(Number(fuelConsumed) * 1.6); // Approximate cost multiplier
-    const fuelLog = insertItem('fuelLogs', {
+    const fuelLog = await insertItem('fuelLogs', {
       vehicleId: trip.vehicleId,
       liters: Number(fuelConsumed),
       cost: fuelCost,
       date: new Date().toISOString().split('T')[0]
     });
 
-    insertItem('expenses', {
+    await insertItem('expenses', {
       vehicleId: trip.vehicleId,
       type: 'fuel',
       cost: fuelCost,
@@ -430,22 +429,22 @@ router.put('/trips/:id/complete', protect, (req, res) => {
   res.json({ success: true, message: 'Trip completed successfully' });
 });
 
-router.put('/trips/:id/cancel', protect, (req, res) => {
+router.put('/trips/:id/cancel', protect, async (req, res) => {
   const { id } = req.params;
-  const trip = getItemById('trips', id);
+  const trip = await getItemById('trips', id);
   if (!trip) return res.status(404).json({ error: 'Trip not found' });
 
   const oldStatus = trip.status;
   
-  updateItemById('trips', id, {
+  await updateItemById('trips', id, {
     status: 'cancelled',
     endDate: new Date().toISOString()
   });
 
   // 7. Business Rule: Cancelling a dispatched trip restores the vehicle and driver to Available.
   if (oldStatus === 'dispatched') {
-    updateItemById('vehicles', trip.vehicleId, { status: 'available' });
-    updateItemById('drivers', trip.driverId, { status: 'available' });
+    await updateItemById('vehicles', trip.vehicleId, { status: 'available' });
+    await updateItemById('drivers', trip.driverId, { status: 'available' });
   }
 
   res.json({ success: true, message: 'Trip cancelled successfully' });
@@ -455,21 +454,21 @@ router.put('/trips/:id/cancel', protect, (req, res) => {
 // MAINTENANCE ENDPOINTS
 // ----------------------------------------------------
 
-router.get('/maintenance', protect, (req, res) => {
-  res.json(getCollection('maintenance'));
+router.get('/maintenance', protect, async (req, res) => {
+  res.json(await getCollection('maintenance'));
 });
 
-router.post('/maintenance', protect, (req, res) => {
+router.post('/maintenance', protect, async (req, res) => {
   const { vehicleId, issue, cost, date } = req.body;
   if (!vehicleId || !issue || !cost) {
     return res.status(400).json({ error: 'Vehicle, Issue, and Cost are required' });
   }
 
-  const vehicle = getItemById('vehicles', vehicleId);
+  const vehicle = await getItemById('vehicles', vehicleId);
   if (!vehicle) return res.status(404).json({ error: 'Vehicle not found' });
 
   // 8. Business Rule: Creating an active maintenance record automatically changes vehicle status to In Shop.
-  const newMaint = insertItem('maintenance', {
+  const newMaint = await insertItem('maintenance', {
     vehicleId,
     issue,
     cost: Number(cost),
@@ -477,10 +476,10 @@ router.post('/maintenance', protect, (req, res) => {
     status: 'in_progress'
   });
 
-  updateItemById('vehicles', vehicleId, { status: 'in_shop' });
+  await updateItemById('vehicles', vehicleId, { status: 'in_shop' });
 
   // Add maintenance as an expense record
-  insertItem('expenses', {
+  await insertItem('expenses', {
     vehicleId,
     type: 'maintenance',
     cost: Number(cost),
@@ -488,7 +487,7 @@ router.post('/maintenance', protect, (req, res) => {
     description: `Maintenance: ${issue} (${newMaint.id})`
   });
 
-  insertItem('notifications', {
+  await insertItem('notifications', {
     role: 'fleet_manager',
     message: `Vehicle ${vehicle.registrationNumber} entered shop for: ${issue}`,
     date: new Date().toISOString(),
@@ -498,22 +497,22 @@ router.post('/maintenance', protect, (req, res) => {
   res.status(201).json(newMaint);
 });
 
-router.put('/maintenance/:id/complete', protect, (req, res) => {
+router.put('/maintenance/:id/complete', protect, async (req, res) => {
   const { id } = req.params;
-  const maint = getItemById('maintenance', id);
+  const maint = await getItemById('maintenance', id);
   if (!maint) return res.status(404).json({ error: 'Maintenance record not found' });
 
   if (maint.status !== 'in_progress') {
     return res.status(400).json({ error: 'Maintenance is already completed' });
   }
 
-  updateItemById('maintenance', id, { status: 'completed' });
+  await updateItemById('maintenance', id, { status: 'completed' });
 
-  const vehicle = getItemById('vehicles', maint.vehicleId);
+  const vehicle = await getItemById('vehicles', maint.vehicleId);
   if (vehicle) {
     // 9. Business Rule: Closing maintenance restores the vehicle to Available (unless retired).
     if (vehicle.status !== 'retired') {
-      updateItemById('vehicles', maint.vehicleId, { status: 'available' });
+      await updateItemById('vehicles', maint.vehicleId, { status: 'available' });
     }
   }
 
@@ -524,20 +523,20 @@ router.put('/maintenance/:id/complete', protect, (req, res) => {
 // EXPENSES & FUEL ENDPOINTS
 // ----------------------------------------------------
 
-router.get('/expenses', protect, (req, res) => {
-  res.json(getCollection('expenses'));
+router.get('/expenses', protect, async (req, res) => {
+  res.json(await getCollection('expenses'));
 });
 
-router.post('/expenses', protect, (req, res) => {
+router.post('/expenses', protect, async (req, res) => {
   const { vehicleId, type, cost, date, description } = req.body;
   if (!vehicleId || !type || !cost || !description) {
     return res.status(400).json({ error: 'Vehicle, Type, Cost, and Description are required' });
   }
 
-  const vehicle = getItemById('vehicles', vehicleId);
+  const vehicle = await getItemById('vehicles', vehicleId);
   if (!vehicle) return res.status(404).json({ error: 'Vehicle not found' });
 
-  const newExpense = insertItem('expenses', {
+  const newExpense = await insertItem('expenses', {
     vehicleId,
     type,
     cost: Number(cost),
@@ -548,22 +547,22 @@ router.post('/expenses', protect, (req, res) => {
   res.status(201).json(newExpense);
 });
 
-router.get('/fuel', protect, (req, res) => {
-  res.json(getCollection('fuelLogs'));
+router.get('/fuel', protect, async (req, res) => {
+  res.json(await getCollection('fuelLogs'));
 });
 
-router.post('/fuel', protect, (req, res) => {
+router.post('/fuel', protect, async (req, res) => {
   const { vehicleId, liters, cost, date } = req.body;
   if (!vehicleId || !liters || !cost) {
     return res.status(400).json({ error: 'Vehicle, Liters, and Cost are required' });
   }
 
-  const vehicle = getItemById('vehicles', vehicleId);
+  const vehicle = await getItemById('vehicles', vehicleId);
   if (!vehicle) return res.status(404).json({ error: 'Vehicle not found' });
 
   const logDate = date || new Date().toISOString().split('T')[0];
   
-  const newFuelLog = insertItem('fuelLogs', {
+  const newFuelLog = await insertItem('fuelLogs', {
     vehicleId,
     liters: Number(liters),
     cost: Number(cost),
@@ -571,7 +570,7 @@ router.post('/fuel', protect, (req, res) => {
   });
 
   // Automatically log an expense for the fuel fill
-  insertItem('expenses', {
+  await insertItem('expenses', {
     vehicleId,
     type: 'fuel',
     cost: Number(cost),
@@ -586,14 +585,14 @@ router.post('/fuel', protect, (req, res) => {
 // NOTIFICATIONS ENDPOINTS
 // ----------------------------------------------------
 
-router.get('/notifications', protect, (req, res) => {
-  const notifs = getCollection('notifications');
+router.get('/notifications', protect, async (req, res) => {
+  const notifs = await getCollection('notifications');
   res.json(notifs);
 });
 
-router.put('/notifications/:id/read', protect, (req, res) => {
+router.put('/notifications/:id/read', protect, async (req, res) => {
   const { id } = req.params;
-  const updated = updateItemById('notifications', id, { read: true });
+  const updated = await updateItemById('notifications', id, { read: true });
   if (!updated) return res.status(404).json({ error: 'Notification not found' });
   res.json(updated);
 });
@@ -602,12 +601,12 @@ router.put('/notifications/:id/read', protect, (req, res) => {
 // REPORTS & ANALYTICS ENDPOINTS
 // ----------------------------------------------------
 
-router.get('/reports/summary', protect, (req, res) => {
-  const vehicles = getCollection('vehicles');
-  const trips = getCollection('trips');
-  const maintenance = getCollection('maintenance');
-  const fuelLogs = getCollection('fuelLogs');
-  const expenses = getCollection('expenses');
+router.get('/reports/summary', protect, async (req, res) => {
+  const vehicles = await getCollection('vehicles');
+  const trips = await getCollection('trips');
+  const maintenance = await getCollection('maintenance');
+  const fuelLogs = await getCollection('fuelLogs');
+  const expenses = await getCollection('expenses');
 
   // 1. Operational Cost per Vehicle (Fuel + Maintenance expenses)
   const costPerVehicle = {};
@@ -688,35 +687,53 @@ router.get('/reports/summary', protect, (req, res) => {
     ? Math.round((activeCount / totalVehiclesCount) * 100) 
     : 0;
 
-  // Monthly trips count
-  const monthlyTrips = [
-    { name: 'Feb', trips: 12 },
-    { name: 'Mar', trips: 19 },
-    { name: 'Apr', trips: 15 },
-    { name: 'May', trips: 22 },
-    { name: 'Jun', trips: 30 },
-    { name: 'Jul', trips: trips.filter(t => t.status === 'completed').length }
-  ];
+  // Get monthly trends dynamically
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  
+  const monthlyTripsMap = {};
+  const fuelTrendMap = {};
+  const maintTrendMap = {};
+  
+  const last6Months = [];
+  const currentDate = new Date();
+  
+  for (let i = 5; i >= 0; i--) {
+    const tempDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
+    const monthName = months[tempDate.getMonth()];
+    last6Months.push(monthName);
+    monthlyTripsMap[monthName] = 0;
+    fuelTrendMap[monthName] = 0;
+    maintTrendMap[monthName] = 0;
+  }
 
-  // Fuel trend (arbitrary summary over months)
-  const fuelExpenseTrend = [
-    { name: 'Feb', amount: 450 },
-    { name: 'Mar', amount: 590 },
-    { name: 'Apr', amount: 480 },
-    { name: 'May', amount: 620 },
-    { name: 'Jun', amount: 800 },
-    { name: 'Jul', amount: expenses.filter(e => e.type === 'fuel').reduce((sum, e) => sum + e.cost, 0) }
-  ];
+  // Count trips by month
+  trips.forEach(t => {
+    if (t.status === 'completed' && t.endTime) {
+      const date = new Date(t.endTime);
+      const mName = months[date.getMonth()];
+      if (monthlyTripsMap[mName] !== undefined) {
+        monthlyTripsMap[mName] += 1;
+      }
+    }
+  });
 
-  // Maintenance cost trend
-  const maintenanceTrend = [
-    { name: 'Feb', amount: 200 },
-    { name: 'Mar', amount: 800 },
-    { name: 'Apr', amount: 150 },
-    { name: 'May', amount: 350 },
-    { name: 'Jun', amount: 400 },
-    { name: 'Jul', amount: expenses.filter(e => e.type === 'maintenance').reduce((sum, e) => sum + e.cost, 0) }
-  ];
+  // Sum fuel and maintenance expenses by month
+  expenses.forEach(e => {
+    if (e.date) {
+      const date = new Date(e.date);
+      const mName = months[date.getMonth()];
+      if (e.type === 'fuel' && fuelTrendMap[mName] !== undefined) {
+        fuelTrendMap[mName] += Number(e.cost) || 0;
+      }
+      if (e.type === 'maintenance' && maintTrendMap[mName] !== undefined) {
+        maintTrendMap[mName] += Number(e.cost) || 0;
+      }
+    }
+  });
+
+  const monthlyTrips = last6Months.map(name => ({ name, trips: monthlyTripsMap[name] }));
+  const fuelExpenseTrend = last6Months.map(name => ({ name, amount: fuelTrendMap[name] }));
+  const maintenanceTrend = last6Months.map(name => ({ name, amount: maintTrendMap[name] }));
 
   res.json({
     kpis: {
@@ -725,7 +742,7 @@ router.get('/reports/summary', protect, (req, res) => {
       activeTrips: trips.filter(t => t.status === 'dispatched').length,
       pendingTrips: trips.filter(t => t.status === 'draft').length,
       maintenanceVehicles: vehicles.filter(v => v.status === 'in_shop').length,
-      driversOnDuty: getCollection('drivers').filter(d => d.status === 'on_trip').length,
+      driversOnDuty: (await getCollection('drivers')).filter(d => d.status === 'on_trip').length,
       fleetUtilization
     },
     vehicleStats,

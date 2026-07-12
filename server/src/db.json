@@ -1,61 +1,5 @@
 {
-  "users": [
-    {
-      "id": "admin-1",
-      "name": "Asha Rao",
-      "email": "admin@transflow.com",
-      "passwordHash": "$2a$10$QOa6NnK5vB/0b09P5K5eCeW8wE/uS4M3vP2j2eE5H.yB1fNf1Nf1y",
-      "role": "admin",
-      "department": "Operations",
-      "avatar": "AR"
-    },
-    {
-      "id": "fleet-1",
-      "name": "Ravi Menon",
-      "email": "fleet@transflow.com",
-      "passwordHash": "$2a$10$QOa6NnK5vB/0b09P5K5eCeW8wE/uS4M3vP2j2eE5H.yB1fNf1Nf1y",
-      "role": "fleet_manager",
-      "department": "Fleet Ops",
-      "avatar": "RM"
-    },
-    {
-      "id": "driver-1",
-      "name": "Neha Singh",
-      "email": "driver@transflow.com",
-      "passwordHash": "$2a$10$QOa6NnK5vB/0b09P5K5eCeW8wE/uS4M3vP2j2eE5H.yB1fNf1Nf1y",
-      "role": "driver",
-      "department": "Field Delivery",
-      "avatar": "NS"
-    },
-    {
-      "id": "safety-1",
-      "name": "Karan Iyer",
-      "email": "safety@transflow.com",
-      "passwordHash": "$2a$10$QOa6NnK5vB/0b09P5K5eCeW8wE/uS4M3vP2j2eE5H.yB1fNf1Nf1y",
-      "role": "safety_officer",
-      "department": "Safety",
-      "avatar": "KI"
-    },
-    {
-      "id": "finance-1",
-      "name": "Lina Thomas",
-      "email": "finance@transflow.com",
-      "passwordHash": "$2a$10$QOa6NnK5vB/0b09P5K5eCeW8wE/uS4M3vP2j2eE5H.yB1fNf1Nf1y",
-      "role": "financial_analyst",
-      "department": "Finance",
-      "avatar": "LT"
-    },
-    {
-      "id": "use-rtwis5jpg",
-      "name": "Santosh",
-      "email": "s@gmail.com",
-      "passwordHash": "$2a$10$zLnGB07Y.4zjN3RQ0U3G0OZaWnoyo4.zPfVHGwxLIpBo5.V4GdCna",
-      "role": "driver",
-      "department": "Field Delivery",
-      "avatar": "S",
-      "createdAt": "2026-07-12T08:02:50.619Z"
-    }
-  ],
+  "users": [],
   "vehicles": [
     {
       "id": "1",
@@ -63,10 +7,10 @@
       "model": "Volvo FH16",
       "type": "truck",
       "capacity": 20000,
-      "status": "available",
       "mileage": 45200,
-      "acquisitionCost": 120000,
-      "createdAt": "2026-07-12T07:55:30.878Z"
+      "status": "available",
+      "createdAt": "2026-07-12T07:55:30.878Z",
+      "updatedAt": "2026-07-12T08:47:06.804Z"
     },
     {
       "id": "2",
@@ -74,10 +18,10 @@
       "model": "Ford Transit",
       "type": "van",
       "capacity": 3500,
-      "status": "on_trip",
       "mileage": 32100,
-      "acquisitionCost": 45000,
-      "createdAt": "2026-07-12T07:55:30.878Z"
+      "status": "on_trip",
+      "createdAt": "2026-07-12T07:55:30.878Z",
+      "updatedAt": "2026-07-12T08:47:06.805Z"
     },
     {
       "id": "3",
@@ -85,10 +29,10 @@
       "model": "Royal Enfield",
       "type": "bike",
       "capacity": 150,
-      "status": "available",
       "mileage": 12500,
-      "acquisitionCost": 3000,
-      "createdAt": "2026-07-12T07:55:30.878Z"
+      "status": "available",
+      "createdAt": "2026-07-12T07:55:30.878Z",
+      "updatedAt": "2026-07-12T08:47:06.805Z"
     },
     {
       "id": "4",
@@ -96,52 +40,24 @@
       "model": "Toyota Innova",
       "type": "taxi",
       "capacity": 1200,
-      "status": "in_shop",
       "mileage": 67800,
-      "acquisitionCost": 25000,
-      "createdAt": "2026-07-12T07:55:30.878Z"
+      "status": "in_shop",
+      "createdAt": "2026-07-12T07:55:30.878Z",
+      "updatedAt": "2026-07-12T08:47:06.805Z"
     }
   ],
   "drivers": [
     {
-      "id": "driver-1",
-      "name": "Neha Singh",
-      "licenseNumber": "DL-12345",
+      "id": "dri-cgb68zj94",
+      "name": "Anoop",
+      "licenseNumber": "12345",
       "licenseCategory": "HGV",
-      "licenseExpiryDate": "2028-12-31",
-      "phone": "9876543210",
-      "safetyScore": 95,
-      "status": "on_trip"
-    },
-    {
-      "id": "driver-2",
-      "name": "Alex Kumar",
-      "licenseNumber": "DL-67890",
-      "licenseCategory": "LMV",
-      "licenseExpiryDate": "2027-05-15",
-      "phone": "9876543211",
-      "safetyScore": 88,
-      "status": "available"
-    },
-    {
-      "id": "driver-3",
-      "name": "Vikram Dev",
-      "licenseNumber": "DL-55443",
-      "licenseCategory": "HGV",
-      "licenseExpiryDate": "2026-02-10",
-      "phone": "9876543212",
-      "safetyScore": 78,
-      "status": "off_duty"
-    },
-    {
-      "id": "driver-4",
-      "name": "Suresh Pal",
-      "licenseNumber": "DL-99887",
-      "licenseCategory": "LMV",
-      "licenseExpiryDate": "2026-11-20",
-      "phone": "9876543213",
-      "safetyScore": 45,
-      "status": "suspended"
+      "phone": "9008767575",
+      "licenseExpiryDate": "2027-06-12",
+      "safetyScore": 90,
+      "status": "available",
+      "createdAt": "2026-07-12T09:02:57.369Z",
+      "updatedAt": "2026-07-12T09:02:57.369Z"
     }
   ],
   "trips": [
@@ -153,13 +69,10 @@
       "driverId": "driver-1",
       "cargoWeight": 3000,
       "distance": 150,
-      "status": "dispatched",
-      "startDate": "2026-07-12T07:55:30.878Z",
-      "endDate": null,
-      "finalOdometer": null,
-      "fuelConsumed": null,
       "revenue": 800,
-      "createdAt": "2026-07-12T07:55:30.878Z"
+      "status": "dispatched",
+      "createdAt": "2026-07-12T07:55:30.878Z",
+      "updatedAt": "2026-07-12T09:01:26.554Z"
     },
     {
       "id": "trip-2",
@@ -169,13 +82,10 @@
       "driverId": "driver-2",
       "cargoWeight": 15000,
       "distance": 350,
-      "status": "completed",
-      "startDate": "2026-07-07T07:55:30.878Z",
-      "endDate": "2026-07-08T07:55:30.878Z",
-      "finalOdometer": 45200,
-      "fuelConsumed": 110,
       "revenue": 2500,
-      "createdAt": "2026-07-07T07:55:30.878Z"
+      "status": "completed",
+      "createdAt": "2026-07-07T07:55:30.878Z",
+      "updatedAt": "2026-07-12T09:01:26.555Z"
     },
     {
       "id": "trip-3",
@@ -185,13 +95,10 @@
       "driverId": "driver-4",
       "cargoWeight": 100,
       "distance": 270,
-      "status": "cancelled",
-      "startDate": "2026-07-10T07:55:30.878Z",
-      "endDate": "2026-07-10T07:55:30.878Z",
-      "finalOdometer": null,
-      "fuelConsumed": null,
       "revenue": 0,
-      "createdAt": "2026-07-10T07:55:30.878Z"
+      "status": "cancelled",
+      "createdAt": "2026-07-10T07:55:30.878Z",
+      "updatedAt": "2026-07-12T09:01:26.555Z"
     }
   ],
   "maintenance": [
@@ -201,7 +108,9 @@
       "issue": "Engine Tune-up & Oil Change",
       "cost": 450,
       "date": "2026-07-10",
-      "status": "in_progress"
+      "status": "in_progress",
+      "createdAt": "2026-07-12T09:01:26.629Z",
+      "updatedAt": "2026-07-12T09:01:26.629Z"
     },
     {
       "id": "maint-2",
@@ -209,23 +118,9 @@
       "issue": "Brake Pad Replacement",
       "cost": 1200,
       "date": "2026-06-25",
-      "status": "completed"
-    }
-  ],
-  "fuelLogs": [
-    {
-      "id": "fuel-1",
-      "vehicleId": "1",
-      "liters": 110,
-      "cost": 180,
-      "date": "2026-07-06"
-    },
-    {
-      "id": "fuel-2",
-      "vehicleId": "2",
-      "liters": 45,
-      "cost": 75,
-      "date": "2026-07-11"
+      "status": "completed",
+      "createdAt": "2026-07-12T09:01:26.629Z",
+      "updatedAt": "2026-07-12T09:01:26.629Z"
     }
   ],
   "expenses": [
@@ -235,7 +130,9 @@
       "type": "toll",
       "cost": 50,
       "date": "2026-07-05",
-      "description": "NH4 Highway Toll"
+      "description": "NH4 Highway Toll",
+      "createdAt": "2026-07-12T09:01:26.699Z",
+      "updatedAt": "2026-07-12T09:01:26.699Z"
     },
     {
       "id": "exp-2",
@@ -243,7 +140,9 @@
       "type": "maintenance",
       "cost": 450,
       "date": "2026-07-10",
-      "description": "Engine Tune-up (linked to maintenance log maint-1)"
+      "description": "Engine Tune-up (linked to maintenance log maint-1)",
+      "createdAt": "2026-07-12T09:01:26.699Z",
+      "updatedAt": "2026-07-12T09:01:26.699Z"
     },
     {
       "id": "exp-3",
@@ -251,7 +150,9 @@
       "type": "fuel",
       "cost": 180,
       "date": "2026-07-06",
-      "description": "Refuel log fuel-1"
+      "description": "Refuel log fuel-1",
+      "createdAt": "2026-07-12T09:01:26.699Z",
+      "updatedAt": "2026-07-12T09:01:26.699Z"
     },
     {
       "id": "exp-4",
@@ -259,23 +160,30 @@
       "type": "fuel",
       "cost": 75,
       "date": "2026-07-11",
-      "description": "Refuel log fuel-2"
+      "description": "Refuel log fuel-2",
+      "createdAt": "2026-07-12T09:01:26.699Z",
+      "updatedAt": "2026-07-12T09:01:26.699Z"
     }
   ],
+  "fuel": [],
   "notifications": [
     {
       "id": "notif-1",
-      "role": "safety_officer",
       "message": "Driver Vikram Dev's license expired on 2026-02-10!",
+      "role": "safety_officer",
+      "read": false,
       "date": "2026-07-12T07:55:30.878Z",
-      "read": false
+      "createdAt": "2026-07-12T09:01:26.809Z",
+      "updatedAt": "2026-07-12T09:01:26.809Z"
     },
     {
       "id": "notif-2",
-      "role": "fleet_manager",
       "message": "Vehicle TAXI-088 has entered shop for Maintenance.",
+      "role": "fleet_manager",
+      "read": false,
       "date": "2026-07-12T07:55:30.878Z",
-      "read": false
+      "createdAt": "2026-07-12T09:01:26.810Z",
+      "updatedAt": "2026-07-12T09:01:26.810Z"
     }
   ]
 }
