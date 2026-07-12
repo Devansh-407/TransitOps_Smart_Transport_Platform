@@ -1,0 +1,188 @@
+{
+  "users": [
+    {
+      "id": "use-wjczzu3nh",
+      "name": "devu",
+      "email": "devansh.work247@gmail.com",
+      "passwordHash": "$2a$10$R19RHBVL0RvMefMxezwlOuN150COc.idfKAwoR0TxSWLCuBRZQ/ue",
+      "role": "fleet_manager",
+      "department": "Fleet Ops",
+      "avatar": "D",
+      "createdAt": "2026-07-12T09:27:20.894Z",
+      "updatedAt": "2026-07-12T09:27:20.894Z"
+    }
+  ],
+  "vehicles": [
+    {
+      "id": "1",
+      "registrationNumber": "TRK-001",
+      "model": "Volvo FH16",
+      "type": "truck",
+      "capacity": 20000,
+      "mileage": 45200,
+      "status": "available",
+      "createdAt": "2026-07-12T07:55:30.878Z",
+      "updatedAt": "2026-07-12T08:47:06.804Z"
+    },
+    {
+      "id": "2",
+      "registrationNumber": "VAN-045",
+      "model": "Ford Transit",
+      "type": "van",
+      "capacity": 3500,
+      "mileage": 32100,
+      "status": "on_trip",
+      "createdAt": "2026-07-12T07:55:30.878Z",
+      "updatedAt": "2026-07-12T08:47:06.805Z"
+    },
+    {
+      "id": "3",
+      "registrationNumber": "BIKE-102",
+      "model": "Royal Enfield",
+      "type": "bike",
+      "capacity": 150,
+      "mileage": 12500,
+      "status": "available",
+      "createdAt": "2026-07-12T07:55:30.878Z",
+      "updatedAt": "2026-07-12T08:47:06.805Z"
+    },
+    {
+      "id": "4",
+      "registrationNumber": "TAXI-088",
+      "model": "Toyota Innova",
+      "type": "taxi",
+      "capacity": 1200,
+      "mileage": 67800,
+      "status": "in_shop",
+      "createdAt": "2026-07-12T07:55:30.878Z",
+      "updatedAt": "2026-07-12T08:47:06.805Z"
+    }
+  ],
+  "drivers": [],
+  "trips": [
+    {
+      "id": "trip-1",
+      "source": "Mumbai",
+      "destination": "Pune",
+      "vehicleId": "2",
+      "driverId": "driver-1",
+      "cargoWeight": 3000,
+      "distance": 150,
+      "revenue": 800,
+      "status": "dispatched",
+      "createdAt": "2026-07-12T07:55:30.878Z",
+      "updatedAt": "2026-07-12T09:01:26.554Z"
+    },
+    {
+      "id": "trip-2",
+      "source": "Chennai",
+      "destination": "Bangalore",
+      "vehicleId": "1",
+      "driverId": "driver-2",
+      "cargoWeight": 15000,
+      "distance": 350,
+      "revenue": 2500,
+      "status": "completed",
+      "createdAt": "2026-07-07T07:55:30.878Z",
+      "updatedAt": "2026-07-12T09:01:26.555Z"
+    },
+    {
+      "id": "trip-3",
+      "source": "Delhi",
+      "destination": "Jaipur",
+      "vehicleId": "3",
+      "driverId": "driver-4",
+      "cargoWeight": 100,
+      "distance": 270,
+      "revenue": 0,
+      "status": "cancelled",
+      "createdAt": "2026-07-10T07:55:30.878Z",
+      "updatedAt": "2026-07-12T09:01:26.555Z"
+    }
+  ],
+  "maintenance": [
+    {
+      "id": "maint-1",
+      "vehicleId": "4",
+      "issue": "Engine Tune-up & Oil Change",
+      "cost": 450,
+      "date": "2026-07-10",
+      "status": "in_progress",
+      "createdAt": "2026-07-12T09:01:26.629Z",
+      "updatedAt": "2026-07-12T09:01:26.629Z"
+    },
+    {
+      "id": "maint-2",
+      "vehicleId": "1",
+      "issue": "Brake Pad Replacement",
+      "cost": 1200,
+      "date": "2026-06-25",
+      "status": "completed",
+      "createdAt": "2026-07-12T09:01:26.629Z",
+      "updatedAt": "2026-07-12T09:01:26.629Z"
+    }
+  ],
+  "expenses": [
+    {
+      "id": "exp-1",
+      "vehicleId": "1",
+      "type": "toll",
+      "cost": 50,
+      "date": "2026-07-05",
+      "description": "NH4 Highway Toll",
+      "createdAt": "2026-07-12T09:01:26.699Z",
+      "updatedAt": "2026-07-12T09:01:26.699Z"
+    },
+    {
+      "id": "exp-2",
+      "vehicleId": "4",
+      "type": "maintenance",
+      "cost": 450,
+      "date": "2026-07-10",
+      "description": "Engine Tune-up (linked to maintenance log maint-1)",
+      "createdAt": "2026-07-12T09:01:26.699Z",
+      "updatedAt": "2026-07-12T09:01:26.699Z"
+    },
+    {
+      "id": "exp-3",
+      "vehicleId": "1",
+      "type": "fuel",
+      "cost": 180,
+      "date": "2026-07-06",
+      "description": "Refuel log fuel-1",
+      "createdAt": "2026-07-12T09:01:26.699Z",
+      "updatedAt": "2026-07-12T09:01:26.699Z"
+    },
+    {
+      "id": "exp-4",
+      "vehicleId": "2",
+      "type": "fuel",
+      "cost": 75,
+      "date": "2026-07-11",
+      "description": "Refuel log fuel-2",
+      "createdAt": "2026-07-12T09:01:26.699Z",
+      "updatedAt": "2026-07-12T09:01:26.699Z"
+    }
+  ],
+  "fuel": [],
+  "notifications": [
+    {
+      "id": "notif-1",
+      "message": "Driver Vikram Dev's license expired on 2026-02-10!",
+      "role": "safety_officer",
+      "read": false,
+      "date": "2026-07-12T07:55:30.878Z",
+      "createdAt": "2026-07-12T09:01:26.809Z",
+      "updatedAt": "2026-07-12T09:01:26.809Z"
+    },
+    {
+      "id": "notif-2",
+      "message": "Vehicle TAXI-088 has entered shop for Maintenance.",
+      "role": "fleet_manager",
+      "read": false,
+      "date": "2026-07-12T07:55:30.878Z",
+      "createdAt": "2026-07-12T09:01:26.810Z",
+      "updatedAt": "2026-07-12T09:01:26.810Z"
+    }
+  ]
+}
