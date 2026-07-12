@@ -27,6 +27,7 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 const STORAGE_KEY = 'transflow-user';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  
   const [user, setUser] = useState<AppUser | null>(null);
   const [loading, setLoading] = useState(true);
 
