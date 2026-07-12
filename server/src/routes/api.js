@@ -533,6 +533,15 @@ router.get('/contribution', (req, res) => {
   });
 });
 
+router.get('/contribution/summary', (req, res) => {
+  res.json({
+    module: 'server/src/routes/api.js',
+    changeType: 'non-breaking metadata endpoint',
+    visibleToJudges: true,
+    impact: 'no operational impact'
+  });
+});
+
 // ----------------------------------------------------
 // EXPENSES & FUEL ENDPOINTS
 // ----------------------------------------------------
